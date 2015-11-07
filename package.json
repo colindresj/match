@@ -1,0 +1,20 @@
+{
+  "name": "@colindresj/match",
+  "version": "0.0.1",
+  "description": "Functional pattern matching for JavaScript",
+  "main": "lib/match.js",
+  "scripts": {
+    "test": "babel-tape-runner ./test/*.test.js | faucet"
+  },
+  "keywords": [
+    "pattern matching",
+    "functional"
+  ],
+  "author": "JC",
+  "license": "MIT",
+  "devDependencies": {
+    "babel-tape-runner": "~1.2.0",
+    "faucet": "0.0.1",
+    "tape": "^4.2.2"
+  }
+}
