@@ -1,0 +1,11 @@
+#! /usr/bin/env node
+
+var browserify = require('browserify');
+var babelify = require('babelify');
+var browser = require('browser-run');
+
+browserify('./test/match.test.js')
+  .transform(babelify, { presets: ['es2015'] })
+  .bundle()
+  .pipe(browser({ port: 7272 }))
+  .pipe(process.stdout);
