@@ -41,9 +41,11 @@ test('primitives', ({ test }) => {
     const pattern2 = [Infinity, () => 'fetch forever!'];
     const m2 = match(pattern2);
 
+    t.comment('- Infinity');
     t.equal(m2(Infinity), 'fetch forever!');
     t.throws(() => m2(-Infinity));
 
+    t.comment('- NaN');
     const pattern3 = [NaN, () => 'fetch for ...?'];
     const m3 = match(pattern3);
 
@@ -78,4 +80,19 @@ test('primitives', ({ test }) => {
 
     t.end();
   });
+});
+
+test('RegExp', t => {
+  const pattern = [/!$/, match => `${match}!!`];
+  const m = match(pattern);
+
+  t.equal(m('Bone!'), 'Bone!!!');
+  t.throws(() => m('bath time :('));
+
+  const pattern2 = [new RegExp('!$'), match => `${match}!!`];
+  const m2 = match(pattern2);
+
+  t.equal(m2('Ball!'), 'Ball!!!');
+
+  t.end();
 });
