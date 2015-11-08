@@ -23,6 +23,7 @@
     "tape": "^4.2.2"
   },
   "dependencies": {
-    "curry": "^1.2.0"
+    "curry": "^1.2.0",
+    "deep-equal": "^1.0.1"
   }
 }

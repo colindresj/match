@@ -96,3 +96,51 @@ test('RegExp', t => {
 
   t.end();
 });
+
+test('Array', t => {
+  const pattern = [
+    ['bone', 'bone', 'bone'],
+    match => `I got ${match.length} bones`
+  ];
+  const m = match(pattern);
+
+  t.equal(m(['bone', 'bone', 'bone']), 'I got 3 bones');
+  t.throws(() => m(['bone', 'rock', 'bone']));
+
+  t.comment('- Array constructor');
+  const pattern2 = [
+    new Array('bone', 'bone', 'bone'),
+    match => `I got ${match.length} bones`
+  ];
+  const m2 = match(pattern2);
+
+  t.equal(m2(['bone', 'bone', 'bone']), 'I got 3 bones');
+  t.throws(() => m2(['bone', 'rock', 'bone']));
+
+  const pattern3 = [
+    new Array(1),
+    match => `I got ${match.length} ?`
+  ];
+  const m3 = match(pattern3);
+
+  t.equal(m3([undefined]), 'I got 1 ?');
+  t.throws(() => m3([]));
+
+  t.comment('- Deep Arrays');
+  const pattern4 = [
+    [{ name: 'Fido', age: 0 }],
+    match => 'We got a puppy!'
+  ];
+  const m4 = match(pattern4);
+
+  t.equal(m4([{ name: 'Fido', age: 0 }]), 'We got a puppy!');
+  t.throws(() => m4([{ name: 'Fido', age: 5 }]));
+
+  const pattern5 = [[1, 2, [1, 2]], match => 'We got a puppy!'];
+  const m5 = match(pattern5);
+
+  t.equal(m5([1, 2, [1, 2]]), 'We got a puppy!');
+  t.throws(() => m5([1, 2, [1]]));
+
+  t.end();
+});
