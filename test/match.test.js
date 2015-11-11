@@ -158,5 +158,12 @@ test('Array', t => {
   t.equal(m5([1, 2, [1, 2]]), 'We got a puppy!');
   t.throws(() => m5([1, 2, [1]]));
 
+  t.comment('- Wildcard items');
+  const pattern6 = [[1, _, 3], () => 'Treats!'];
+  const m6 = match(pattern6);
+
+  t.equal(m6([1, 1000, 3]), 'Treats!');
+  t.throws(() => m6([10000, 2, 3]));
+
   t.end();
 });
