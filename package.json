@@ -2,7 +2,7 @@
   "name": "@colindresj/match",
   "version": "0.0.1",
   "description": "Functional pattern matching for JavaScript",
-  "main": "lib/match.js",
+  "main": "./index.js",
   "scripts": {
     "test": "babel-tape-runner ./test/*.test.js | faucet",
     "test:browser": "./bin/browser-test | faucet"

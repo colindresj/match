@@ -1,11 +1,27 @@
 import test from 'tape';
 import match from '../lib/match';
+import _ from '../lib/wildcard';
 
 test('param binding', t => {
   const pattern = [3, 'barks!!!', (num, phrase) => `${num} ${phrase}`];
   const m = match(pattern);
 
   t.equal(m(3, 'barks!!!'), '3 barks!!!');
+
+  t.end();
+});
+
+test('wildcard', t => {
+  const pattern = [_, () => 'Frizbee!'];
+  const m = match(pattern);
+
+  t.equal(m(true), 'Frizbee!');
+  t.equal(m('dog'), 'Frizbee!');
+  t.equal(m(1), 'Frizbee!');
+  t.equal(m(undefined), 'Frizbee!');
+  t.equal(m(null), 'Frizbee!');
+  t.equal(m(/dog/), 'Frizbee!');
+  t.equal(m([1, 2]), 'Frizbee!');
 
   t.end();
 });
