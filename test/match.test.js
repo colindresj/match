@@ -167,3 +167,67 @@ test('Array', t => {
 
   t.end();
 });
+
+test('Objects', t => {
+  const pattern = [
+    { activity: 'fetch' },
+    match => `Lets play ${match.activity}!`
+  ];
+  const m = match(pattern);
+
+  t.equal(m({ activity: 'fetch' }), 'Lets play fetch!');
+  t.throws(() => m({ activity: 'frizbee' }));
+
+  t.comment('- Deep Objects');
+  const pattern2 = [
+    { activities: ['fetch', 'frizbee'] },
+    match => `Lets play ${match.activities.join(' and ')}!`
+  ];
+  const m2 = match(pattern2);
+
+  t.equal(m2({ activities: ['fetch', 'frizbee'] }), 'Lets play fetch and frizbee!');
+  t.throws(() => m2({ activities: ['frizbee'] }));
+
+  t.comment('- Wildcard values');
+  const pattern3 = [
+    { activity: _  },
+    () => 'Treats!'
+  ];
+  const m3 = match(pattern3);
+
+  t.equal(m3({ activity: 'frizbee' }), 'Treats!');
+  t.throws(() => m3({ activities: null }));
+
+  t.comment('- Object.create');
+  const pattern4 = [
+    { activity: 'fetch'  },
+    () => 'Treats!'
+  ];
+  const m4 = match(pattern4);
+  const obj = Object.create(null);
+  obj.activity = 'fetch';
+
+  t.equal(m4(obj), 'Treats!');
+  t.throws(() => m4({ activities: null }));
+
+  const obj2 = Object.create(null);
+  obj2.activity = 'fetch';
+
+  const pattern5 = [obj2, () => 'Treats!'];
+  const m5 = match(pattern5);
+
+  t.equal(m5({ activity: 'fetch' }), 'Treats!');
+  t.throws(() => m5({ activities: null }));
+
+  t.comment('- Non-Object instances');
+  function Treat(kind = 'jerky') { this.kind = kind; }
+
+  const treat = new Treat();
+  const pattern6 = [treat, () => 'Treats!'];
+  const m6 = match(pattern6);
+
+  t.equal(m6(new Treat()), 'Treats!');
+  t.throws(() => m6(new Treat('kibble')));
+
+  t.end();
+});
