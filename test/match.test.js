@@ -231,3 +231,33 @@ test('Objects', t => {
 
   t.end();
 });
+
+test('Functions', t => {
+  let func = function func() { return 'Lets have treats!' };
+
+  const pattern = [func, func];
+  const m = match(pattern);
+
+  t.equal(m(func), 'Lets have treats!');
+  t.throws(() => m((function func(){})));
+
+  t.comment('- new-ing a function');
+
+  function Treat() {}
+
+  const pattern2 = [Treat, match => 'Lets have treats!'];
+  const m2 = match(pattern2);
+
+  t.equal(m2(new Treat()), 'Lets have treats!');
+  t.throws(() => m2('treats'));
+
+  t.comment('- existing constructors');
+
+  const pattern3 = [String, match => match];
+  const m3 = match(pattern3);
+
+  t.equal(m3('Lets have treats!'), 'Lets have treats!');
+  t.throws(() => m3(123));
+
+  t.end();
+});
