@@ -1,4 +1,5 @@
 import test from 'tape';
+import anyOf from '../lib/any-of';
 import match from '../lib/match';
 import _ from '../lib/wildcard';
 
@@ -258,6 +259,27 @@ test('Functions', t => {
 
   t.equal(m3('Lets have treats!'), 'Lets have treats!');
   t.throws(() => m3(123));
+
+  t.end();
+});
+
+test('anyOf', t => {
+  const pattern = [anyOf(2, 3), num => `Lets play for ${num} mins!`];
+  const m = match(pattern);
+
+  t.equal(m(2), 'Lets play for 2 mins!');
+  t.equal(m(3), 'Lets play for 3 mins!');
+  t.throws(() => m(1));
+  t.throws(() => m('2'));
+  t.throws(() => m('3'));
+
+  const pattern2 = [
+    anyOf(String, Number), num => `Lets play for ${num} mins!`
+  ];
+  const m2 = match(pattern2);
+
+  t.equal(m2('two'), 'Lets play for two mins!');
+  t.equal(m2(2), 'Lets play for 2 mins!');
 
   t.end();
 });
