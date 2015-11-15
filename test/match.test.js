@@ -1,8 +1,8 @@
 import test from 'tape';
-import anyOf from '../lib/any-of';
+import anyOf from '../lib/patterns/any-of';
 import match from '../lib/match';
-import when from '../lib/when';
-import _ from '../lib/wildcard';
+import when from '../lib/patterns/when';
+import _ from '../lib/patterns/wildcard';
 
 test('param binding', t => {
   const pattern = [3, 'barks!!!', (num, phrase) => `${num} ${phrase}`];
