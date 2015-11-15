@@ -1,6 +1,7 @@
 import test from 'tape';
 import anyOf from '../lib/any-of';
 import match from '../lib/match';
+import when from '../lib/when';
 import _ from '../lib/wildcard';
 
 test('param binding', t => {
@@ -280,6 +281,29 @@ test('anyOf', t => {
 
   t.equal(m2('two'), 'Lets play for two mins!');
   t.equal(m2(2), 'Lets play for 2 mins!');
+
+  t.end();
+});
+
+test('when', t => {
+  const isEven = num => num % 2 === 0;
+  const evenAnd = when(isEven);
+  const pattern = [evenAnd(Number), num => `I want ${num} treats!`];
+  const m = match(pattern);
+
+  t.equal(m(2), 'I want 2 treats!');
+  t.throws(() => m(1));
+  t.throws(() => m('2'));
+
+  const isMoreThan2 = num => num > 2;
+  const evenAndMoreThan2And = when([isEven, isMoreThan2]);
+  const pattern2 = [evenAndMoreThan2And(Number), num => `Gimme ${num} treats!`];
+  const m2 = match(pattern2);
+
+  t.equal(m2(4), 'Gimme 4 treats!');
+  t.throws(() => m2(2));
+  t.throws(() => m2(3));
+  t.throws(() => m2('4'));
 
   t.end();
 });
