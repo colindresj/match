@@ -1,0 +1,10 @@
+{
+  "extends": "airbnb/base",
+  "ecmaFeatures": {
+    "restParams": true
+  },
+  "rules": {
+    "comma-dangle": [2, "never"],
+    "no-use-before-define": [2, "nofunc"]
+  }
+}

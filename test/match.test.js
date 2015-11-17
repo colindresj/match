@@ -28,8 +28,8 @@ test('wildcard', t => {
   t.end();
 });
 
-test('primitives', ({ test }) => {
-  test('booleans', t => {
+test('primitives', st => {
+  st.test('booleans', t => {
     const pattern = [true, false, () => 'Dog!'];
     const m = match(pattern);
 
@@ -39,7 +39,7 @@ test('primitives', ({ test }) => {
     t.end();
   });
 
-  test('strings', t => {
+  st.test('strings', t => {
     const pattern = ['go', 'chew', 'the', () => 'BONE!'];
     const m = match(pattern);
 
@@ -49,7 +49,7 @@ test('primitives', ({ test }) => {
     t.end();
   });
 
-  test('numbers', t => {
+  st.test('numbers', t => {
     const pattern = [1, 2, 3, () => 'fetch!'];
     const m = match(pattern);
 
@@ -73,7 +73,7 @@ test('primitives', ({ test }) => {
     t.end();
   });
 
-  test('undefined', t => {
+  st.test('undefined', t => {
     const pattern = [undefined, () => 'this is undefined...'];
     const m = match(pattern);
     const defed = 'I AM defined';
@@ -88,7 +88,7 @@ test('primitives', ({ test }) => {
     t.end();
   });
 
-  test('null', t => {
+  st.test('null', t => {
     const pattern = [null, null, () => 'nothing-ness...'];
     const m = match(pattern);
 
@@ -101,13 +101,13 @@ test('primitives', ({ test }) => {
 });
 
 test('RegExp', t => {
-  const pattern = [/!$/, match => `${match}!!`];
+  const pattern = [/!$/, val => `${val}!!`];
   const m = match(pattern);
 
   t.equal(m('Bone!'), 'Bone!!!');
   t.throws(() => m('bath time :('));
 
-  const pattern2 = [new RegExp('!$'), match => `${match}!!`];
+  const pattern2 = [new RegExp('!$'), val => `${val}!!`];
   const m2 = match(pattern2);
 
   t.equal(m2('Ball!'), 'Ball!!!');
@@ -118,7 +118,7 @@ test('RegExp', t => {
 test('Array', t => {
   const pattern = [
     ['bone', 'bone', 'bone'],
-    match => `I got ${match.length} bones`
+    val => `I got ${val.length} bones`
   ];
   const m = match(pattern);
 
@@ -128,7 +128,7 @@ test('Array', t => {
   t.comment('- Array constructor');
   const pattern2 = [
     new Array('bone', 'bone', 'bone'),
-    match => `I got ${match.length} bones`
+    val => `I got ${val.length} bones`
   ];
   const m2 = match(pattern2);
 
@@ -137,7 +137,7 @@ test('Array', t => {
 
   const pattern3 = [
     new Array(1),
-    match => `I got ${match.length} ?`
+    val => `I got ${val.length} ?`
   ];
   const m3 = match(pattern3);
 
@@ -145,16 +145,13 @@ test('Array', t => {
   t.throws(() => m3([]));
 
   t.comment('- Deep Arrays');
-  const pattern4 = [
-    [{ name: 'Fido', age: 0 }],
-    match => 'We got a puppy!'
-  ];
+  const pattern4 = [[{ name: 'Fido', age: 0 }], () => 'We got a puppy!'];
   const m4 = match(pattern4);
 
   t.equal(m4([{ name: 'Fido', age: 0 }]), 'We got a puppy!');
   t.throws(() => m4([{ name: 'Fido', age: 5 }]));
 
-  const pattern5 = [[1, 2, [1, 2]], match => 'We got a puppy!'];
+  const pattern5 = [[1, 2, [1, 2]], () => 'We got a puppy!'];
   const m5 = match(pattern5);
 
   t.equal(m5([1, 2, [1, 2]]), 'We got a puppy!');
@@ -171,10 +168,7 @@ test('Array', t => {
 });
 
 test('Objects', t => {
-  const pattern = [
-    { activity: 'fetch' },
-    match => `Lets play ${match.activity}!`
-  ];
+  const pattern = [{ activity: 'fetch' }, val => `Lets play ${val.activity}!`];
   const m = match(pattern);
 
   t.equal(m({ activity: 'fetch' }), 'Lets play fetch!');
@@ -183,7 +177,7 @@ test('Objects', t => {
   t.comment('- Deep Objects');
   const pattern2 = [
     { activities: ['fetch', 'frizbee'] },
-    match => `Lets play ${match.activities.join(' and ')}!`
+    val => `Lets play ${val.activities.join(' and ')}!`
   ];
   const m2 = match(pattern2);
 
@@ -192,7 +186,7 @@ test('Objects', t => {
 
   t.comment('- Wildcard values');
   const pattern3 = [
-    { activity: _  },
+    { activity: _ },
     () => 'Treats!'
   ];
   const m3 = match(pattern3);
@@ -202,7 +196,7 @@ test('Objects', t => {
 
   t.comment('- Object.create');
   const pattern4 = [
-    { activity: 'fetch'  },
+    { activity: 'fetch' },
     () => 'Treats!'
   ];
   const m4 = match(pattern4);
@@ -235,19 +229,18 @@ test('Objects', t => {
 });
 
 test('Functions', t => {
-  let func = function func() { return 'Lets have treats!' };
-
+  const func = function func() { return 'Lets have treats!'; };
   const pattern = [func, func];
   const m = match(pattern);
 
   t.equal(m(func), 'Lets have treats!');
-  t.throws(() => m((function func(){})));
+  t.throws(() => m(function func(){})); // eslint-disable-line
 
   t.comment('- new-ing a function');
 
   function Treat() {}
 
-  const pattern2 = [Treat, match => 'Lets have treats!'];
+  const pattern2 = [Treat, () => 'Lets have treats!'];
   const m2 = match(pattern2);
 
   t.equal(m2(new Treat()), 'Lets have treats!');
@@ -255,7 +248,7 @@ test('Functions', t => {
 
   t.comment('- existing constructors');
 
-  const pattern3 = [String, match => match];
+  const pattern3 = [String, val => val];
   const m3 = match(pattern3);
 
   t.equal(m3('Lets have treats!'), 'Lets have treats!');
